@@ -1,0 +1,41 @@
+1.确定两串乱序同构
+描述：给定两个字符串，请编写程序，确定其中一个字符串的字符重新排列后，能否变成另一个字符串。这里规定大小写为不同字符，且考虑字符串重点空格。
+给定一个string stringA和一个string stringB，请返回一个bool，代表两串是否重新排列后可相同。保证两串的长度都小于等于5000。
+测试样例：
+"This is nowcoder","is This nowcoder"
+返回：true
+"Here you are","Are you here"
+返回：false
+
+代码：
+//解法1:使用两个大小为256的散列表（即哈希表，Hash table），通过一次遍历找到每一个字符出现的次数，再遍历一次比较每个字符出现的次数是否相同。不过这里更好的方法是：用一个int[256]数组，遇到stringA加1，stringB减1，最后判断是否全是0。时间复杂度为O(n).
+class Same {
+public:
+    bool checkSam(string stringA, string stringB) {
+        char count[256]={0};
+        if(stringA.size() != stringB.size())
+            return false;
+         
+        for(int i=0;i<stringA.size();i++){
+            count[stringA[i]]++;
+            count[stringB[i]]--;
+        }
+        for(int j=0;j<256;j++){
+            if(count[j] != 0)
+                return false;
+        }
+        return true;
+    }
+};
+
+
+//解法2:直接用sort函数（改进的快排算法），排序后比较两个字符串，虽然简洁，复杂度却是O(nlogn);
+class Same {
+public:
+    bool checkSam(string stringA, string stringB) {
+        
+        sort(stringA.begin(),stringA.end());
+        sort(stringB.begin(),stringB.end());
+        return stringA.compare(stringB)==0;
+    }
+};

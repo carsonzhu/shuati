@@ -1,0 +1,55 @@
+3.基本字符串压缩
+描述：利用字符重复出现的次数，编写一个方法，实现基本的字符串压缩功能。比如，字符串“aabcccccaaa”经压缩会变成“a2b1c5a3”。若压缩后的字符串没有变短，则返回原先的字符串。
+给定一个string iniString为待压缩的串(长度小于等于10000)，保证串内字符均由大小写英文字母组成，返回一个string，为所求的压缩后或未变化的串。
+测试样例
+"aabcccccaaa"
+返回："a2b1c5a3"
+"welcometonowcoderrrrr"
+返回："welcometonowcoderrrrr"
+
+代码：
+class Zipper {
+public:
+    string zipString(string iniString) {
+        string res;
+        int count=1;
+        for(int i=0;i<iniString.size();i++){
+            if(iniString[i] == iniString[i+1]){
+                ++count;
+            }else{
+                res+=iniString[i];
+                //这里使用了c＋＋中int到string的转换
+                stringstream ss;
+                ss<<count;
+                string s=ss.str();
+                
+                res+=s;
+                count=1;
+            }
+        }
+        if(iniString.size() <= res.size() )
+            return iniString;
+        else
+            return res;
+    }
+};
+
+//解法2:
+class Zipper {
+public:
+    string zipString(string iniString) {
+    string str;
+    int i = 0,j = 0;
+    while (i < iniString.length()){
+        while (iniString[i] == iniString[j]) i++;
+        str += iniString[j];
+            str += to_string(i-j); //这里使用to_string函数，是在c＋＋11标准才有的
+        j = i;}
+    if (iniString.length() < str.length()) return iniString;
+    else return str;
+    }
+};
+
+可参考博客：c++ int to string 整型到字符串（http://www.cnblogs.com/younes/archive/2009/11/15/1603331.html）
+int转换为string的两种方法（to_string、字符串流）（http://blog.csdn.net/chavo0/article/details/51038397）
+
