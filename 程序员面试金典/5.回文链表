@@ -50,8 +50,7 @@ class Palindrome {
 public:
     bool isPalindrome(ListNode* pHead) {
         // write code here
-        //方式一：借助vector辅助存储空间
-        /*
+        //借助vector辅助存储空间
         ListNode *cur=pHead;
         vector<int> ans;
         while(cur){
