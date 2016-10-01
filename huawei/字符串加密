@@ -1,0 +1,130 @@
+题目：字符串加密
+描述：
+有一种技巧可以对数据进行加密，它使用一个单词作为它的密匙。下面是它的工作原理：首先，选择一个单词作为密匙，如TRAILBLAZERS。如果单词中包含有重复的字母，只保留第1个，其余几个丢弃。现在，修改过的那个单词属于字母表的下面，如下所示：
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+T R A I L B Z E S C D F G H J K M N O P Q U V W X Y
+上面其他用字母表中剩余的字母填充完整。在对信息进行加密时，信息中的每个字母被固定于顶上那行，并用下面那行的对应字母一一取代原文的字母(字母字符的大小写状态应该保留)。因此，使用这个密匙，Attack AT DAWN(黎明时攻击)就会被加密为Tpptad TP ITVH。
+请实现下述接口，通过指定的密匙和明文得到密文。
+详细描述：
+接口说明
+原型：
+voidencrypt(char * key,char * data,char * encrypt);
+输入参数：
+char * key：密匙
+char * data：明文
+输出参数：
+char * encrypt：密文
+返回值：
+void
+
+输入描述:
+先输入key和要加密的字符串
+
+
+输出描述:
+返回加密后的字符串
+
+输入例子:
+nihao
+ni
+
+输出例子:
+le
+
+解法一：
+
+#include<iostream>
+#include<string>
+using namespace std;
+
+int main(){
+    string key,data;
+    while(cin>>key>>data){
+        string encrypt;
+        int all[26]={0};
+        char temp[26];
+        int len=key.size();
+        int i,j,k,m;
+        //密钥去重
+        for(i=0,j=0;i<len;i++){
+            if(key[i] >= 'a' && key[i] <= 'z')
+                key[i]-=32;
+            all[key[i]-'A']++;
+            if(all[key[i]-'A'] == 1)
+                temp[j++]=key[i];
+        }
+        //得到加密密文
+        for (char c = 'A'; c <= 'Z'; c++)  //用这个比较巧妙
+        {
+            bool flag = false;
+            for(k = 0; k < j; k++)
+            {
+                if(c == temp[k])  
+                    flag = true;
+            }
+            if(flag) continue;
+            else temp[j++] = c;
+        }
+        //cout<< temp <<endl;可以打出来看看前面的步骤是否正确～
+        //对明文进行加密处理
+        int len2 = data.size();
+        for (m = 0; m < len2; m++)
+        {
+            int index = 0;
+            if (data[m] >= 'a' && data[m] <= 'z') {
+                index = data[m] - 'a';
+                data[m]=temp[index] + 32;
+            }
+            else {
+                index = data[m] - 'A';
+                data[m] = temp[index];
+            }
+        }
+        encrypt = data;
+        cout << encrypt << endl;
+    }
+    return 0;
+}
+
+解法二：
+
+#include<iostream>
+#include<string>
+#include<vector>
+#include<algorithm>
+using namespace std;
+ 
+int main(){
+      string key, str;
+      while(cin>>key>>str){
+            string res;
+            vector<char>keys;
+            for(int i = 0; i < key.size(); i++){
+                  vector<char>::iterator it = find(keys.begin(), keys.end(),key[i]);
+                  if(it==keys.end())
+                        keys.push_back(key[i]);
+            }
+            int j = 0;
+            char t = 'a';
+            while(j < 26){
+                  vector<char>::iterator itk = find(keys.begin(), keys.end(),t);
+                  if(itk==keys.end()){
+                        keys.push_back(t);
+                   j++;
+                   t++;
+                  }else{
+                      j++;
+                      t++;
+                  }
+            }
+          for(int k = 0; k < str.size(); k++){
+              if(str[k]>='a'&&str[k]<='z'){
+                  res.push_back(keys[str[k]-'a']);
+              }else if(str[k]>='A' && str[k]<='Z')
+                  res.push_back(keys[str[k]-'a']-'a'+'A');
+              else res.push_back(str[k]);
+          }
+          cout<<res<<endl;
+      }
+    return 0;
+}
