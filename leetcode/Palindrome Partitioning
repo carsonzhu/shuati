@@ -12,4 +12,85 @@ Return
   ["a","a","b"]
 ]
 
-分析：
+分析：题意为给定一个字符串s，将它进行分割使得每个分割所得的子串都是回文的，返回对s的所有可能的回文分割
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+
+//思路：循环找到第一个回文子字符串（子字符串的大小可以是1.2.3.4 ...），然后递归找到其余的字符串回文。
+
+//判断是否为回文字符串
+bool ispalidrome(string s){
+	for (int i = 0; i<s.size(); i++){
+		if (s[i] != s[s.size() - i - 1])
+			return false;
+	}
+	return true;
+}
+
+void process(vector<vector<string>> &vv, vector<string> &vs, string s){
+	if (s.size() == 0){
+		vv.push_back(vs); //循环时每次递归到s的size为0时，就将结果放入vv中
+	}
+
+	for (int i = 1; i <= s.size(); i++){
+		string substr = s.substr(0, i);
+		if (ispalidrome(substr)){
+			vs.push_back(substr);
+			process(vv, vs, s.substr(i, s.size() - i));
+			vs.pop_back();
+		}
+	}
+}
+
+vector<vector<string>> partition(string s) {
+	vector<vector<string>> vv;
+	vector<string> vs;
+	if (s.size() == 0)
+		return vv;
+	process(vv, vs, s);
+	return vv;
+}
+
+int main(){
+	string s;
+	while (getline(cin, s)){
+		vector<vector<string>> res;
+		res = partition(s);
+		for (int i = 0; i < res.size(); i++){
+			for (int j = 0; j < res[i].size(); j++){
+				cout << res[i][j] << endl;
+			}			
+		}
+	}
+	return 0;
+}
+
+
+简洁点：
+class Solution {
+    vector<vector<string> > partitionRes;
+    vector<string> oneRes;
+public:
+        void findpartition(const string &s){
+            for(int i=1; i<=s.size(); i++){
+                int l=0, r=i-1;
+                while( l <= r) {
+                    if(s[l] != s[r]) break;
+                    l++; r--;
+                }
+                if(l > r){
+                    oneRes.push_back(s.substr(0 ,i));
+                    if(i == s.size())partitionRes.push_back(oneRes);
+                    findpartition(s.substr(i));
+                    oneRes.pop_back();
+                }
+            }
+        }
+        vector<vector<string> > partition(string s) {
+            findpartition(s);
+            return partitionRes;
+        }
+};
